@@ -1,0 +1,20 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">{$title}</label>
+    <div class="layui-input-block">
+        <textarea name="{$name}" jq-verify="content" id="content" style="display:none;">
+            {$value}
+        </textarea>
+    </div>
+</div>
+<script>
+    layui.use('layedit', function(){
+        var layedit = layui.layedit;
+        layedit.set({
+            uploadImage: {
+                url: "{:url('system/File/edit_upload_img')}", //接口url
+                type: 'post' //默认post
+            }
+        });
+        layedit.build('content'); //建立编辑器
+    });
+</script>
