@@ -1,0 +1,101 @@
+{extend name="base@:style" /}
+{block name="body"}
+<div class="container-fluid larry-wrapper">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="layui-layer-title">【{$data.title}】插件配置</div>
+            <section class="panel panel-padding">
+                <form id="form1" class="layui-form layui-form-pane" action="/php/data.php">
+                    {empty name="custom_config"}
+                    {foreach name="data['config']" item="form" key="o_key"}
+                            {switch name="form.type"}
+                            {case value="tisp"}
+                            <blockquote class="layui-elem-quote" style="font-size: small;">{$form.title} : {$form.value}</blockquote>
+                            {/case}
+                            {case value="text"}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{$form.title}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="config[{$o_key}]" value="{$form.value}" required jq-verify="username" jq-error="请输入标题" placeholder="{$form.title}" autocomplete="off" class="layui-input ">
+                                </div>
+                            </div>
+                            {/case}
+                            {case value="password"}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{$form.title}</label>
+                                <div class="layui-input-block">
+                                    <input type="password" name="config[{$o_key}]" value="{$form.value}" placeholder="密码" autocomplete="off" class="layui-input ">
+                                </div>
+                            </div>
+                            {/case}
+                            {case value="hidden"}
+                            <input type="hidden" class="form-control" name='config[{$o_key}]' value="{$form.value}" />
+                            {/case}
+                            {case value="radio"}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{$form.title}</label>
+                                <div class="layui-input-block">
+                                    <select name="config[{$o_key}]" jq-verify="required" jq-error="请输入分类" lay-filter="verify">
+                                        {foreach name="form.options" item="opt" key="opt_k"}
+                                        <option value="{$opt_k}" {eq name="form.value" value="$opt_k"} selected {/eq}>{$opt}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            {/case}
+                            {case value="select"}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{$form.title}</label>
+                                <div class="layui-input-block">
+                                    <select name="config[{$o_key}]" jq-verify="required" jq-error="请输入分类" lay-filter="verify">
+                                        {foreach name="form.options" item="opt" key="opt_k"}
+                                        <option value="{$opt_k}" {eq name="form.value" value="$opt_k"} selected {/eq}>{$opt}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            {/case}
+                            {case value="textarea"}
+                            <div class="layui-form-item ">
+                                <label class="layui-form-label">{$form.title}</label>
+                                <div class="layui-input-block">
+                                    <textarea name="config[{$o_key}]" placeholder="{$form.tip}" class="layui-textarea">{$form.value}</textarea>
+                                </div>
+                            </div>
+                            {/case}
+                            {case value="checkbox"}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{$form.title}</label>
+                                <div class="layui-input-inline">
+                                    <select name="config[{$o_key}]" jq-verify="required" jq-error="请输入分类" lay-filter="verify">
+                                        {foreach name="form.options" item="opt" key="opt_k"}
+                                        <option value="{$opt_k}" {eq name="form.value" value="$opt_k"} selected {/eq}>{$opt}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            {/case}
+                            {/switch}
+
+                    {/foreach}
+                    {else /}
+                    {$custom_config}
+                    {/empty}
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" jq-submit jq-filter="submit">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script>
+    layui.use('form');
+</script>
+{/block}

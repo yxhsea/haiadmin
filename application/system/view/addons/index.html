@@ -1,0 +1,256 @@
+{extend name="base@:style" /}
+{block name="body"}
+<div class="container-fluid larry-wrapper">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            {:plugs('cityselect',array('province'=>0,'city'=>0,'district'=>0,'community'=>0))}
+            <!--列表-->
+            <section class="panel panel-padding">
+                <div class="group-button">
+                    <button class="layui-btn layui-btn-small modal-catch" data-params='{"content": ".add-subcat", "title": "添加插件","full":"true"}'>
+                        <i class="iconfont">&#xe649;</i> 创建插件
+                    </button>
+                </div>
+                <div id="list" class="layui-form"></div>
+
+                <div class="text-right" id="page"></div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="add-subcat">
+    <form id="form1" class="layui-form layui-form-pane" action="build">
+        <div class="layui-form-item">
+            <label class="layui-form-label">钩子方法</label>
+            <div class="layui-inline">
+                <select name="hook[]"  lay-verify="required" jq-error="请选择角色">
+                    {volist name="$hooks_list" id="vo"}
+                    <option value="{$vo.name}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">标识名</label>
+            <div class="layui-input-block">
+                <input type="text" name="info[name]" required jq-verify="" jq-error="请输入标识名|请输入数字" placeholder="请输入标识名" autocomplete="off" class="layui-input ">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">插件名</label>
+            <div class="layui-input-block">
+                <input type="text" name="info[title]" required jq-verify="" jq-error="请输入插件名|请输入数字" placeholder="请输入插件名" autocomplete="off" class="layui-input ">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">版本</label>
+            <div class="layui-input-block">
+                <input type="text" name="info[version]" required jq-verify="" jq-error="请输入版本|请输入数字" placeholder="请输入版本" autocomplete="off" class="layui-input ">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">作者</label>
+            <div class="layui-input-block">
+                <input type="text" name="info[author]" required jq-verify="" jq-error="请输入作者|请输入数字" placeholder="请输入作者" autocomplete="off" class="layui-input ">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <textarea name="info[description]" placeholder="请输入描述" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">配置选项</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="info[status]" title="安装后是否启用" value="1" checked="checked">
+                <span  id="has_config">
+                    <input type="checkbox" name="has_config" title="是否需要配置" value="1">
+                </span>
+                <span>
+                    <input type="checkbox" name="has_outurl" title="是否需要外部访问" value="1">
+                </span>
+
+            </div>
+        </div>
+        <div class="layui-form-item " id="configSet" style="display:none;">
+            <label class="layui-form-label">配置</label>
+            <div class="layui-input-block">
+                <textarea name="config" placeholder="请输入配置" class="layui-textarea">
+&lt;?php
+return [
+    'random'=>[                 //配置在表单中的键名 ,这个会是config[random]
+        'title'=>'是否开启随机:',//表单的文字 [必填]
+        'type'=>'radio',		 //表单的类型：text、textarea、checkbox、radio、select等 [必填] 特殊类型：tisp 用于提示
+        'options'=>[	 //select 和radion、checkbox的子选项  [可选]
+            '1'=>'开启',	//值=>文字
+            '0'=>'关闭',
+        ],
+        'value'=>'1',   //表单的默认值 [必填]
+    ],
+];
+                </textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" id="configSet-tpl" style="display:none;">
+            <label class="layui-form-label">自定义模板</label>
+            <div class="layui-input-block">
+                <input type="text" name="custom_config" required jq-verify="" jq-error="请输入作者|请输入数字" placeholder=" 注意：自定义模板里的表单name必须为config[name]这种，获取保存后配置的值用$data.config.name" autocomplete="off" class="layui-input ">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">配置选项</label>
+            <div class="layui-input-block">
+                <span id="has_adminlist">
+                   <input type="checkbox" name="config" title="勾选，会展示列表菜单，可自定义菜单的父级。">
+                </span>
+            </div>
+        </div>
+        <div class="layui-form-item " id="configInput" style="display:none;">
+            <label class="layui-form-label">表单配置</label>
+            <div class="layui-input-block">
+                <textarea name="admin_list" placeholder="请输入配置" class="layui-textarea">
+'pid'		=>	'3',				//默认父菜单为扩展
+'font_class'=>	'plug',				//列表图标，参考 /system/menu/fontselect.html
+'model'		=>	'Example',		//要查的表
+'fields'	=>	'*',			//要查的字段
+'map'		=>	'',				//查询条件, 如果需要可以在插件类的构造方法里动态重置这个属性
+'order'		=>	'id desc',		//排序方式
+'listKey'	=>	[				//这里定义的是除了id序号外的表格里字段显示的表头名
+	'字段名'=>'表头显示名',
+	'字段名'=>'表头显示名'
+],
+                </textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" id="configInput-tpl" style="display:none;">
+            <label class="layui-form-label">自定义模板</label>
+            <div class="layui-input-block">
+                <input type="text" name="custom_adminlist" required jq-verify="" jq-error="请输入作者|请输入数字" placeholder="注意：自定义模板里的列表变量为$_list这种,遍历后可以用listkey可以控制表头显示,也可以完全手写，分页变量用$_page" autocomplete="off" class="layui-input ">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" jq-submit jq-filter="submit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+        <input type="hidden" name="id" value="0"/>
+    </form>
+</div>
+{/block}
+{block name="each"}
+<table class="layui-table lay-even">
+    <thead>
+    <tr>
+        <th width="30"></th>
+        <th width="200">名称</th>
+        <th width="100">标识</th>
+        <th width="500">描述</th>
+        <th width="100">状态</th>
+        <th width="100">作者</th>
+        <th width="100">版本</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="list" id="vo"}
+    <tr>
+        <th width="30"></th>
+        <td>{$vo.title}</td>
+        <td>{$vo.name}</td>
+        <td>{$vo.description}</td>
+        <td>{if condition="isset($vo['status']) eq false"}
+            未安装
+            {else /}
+            {if condition="$vo['status'] eq 1"}
+            启用
+            {else /}
+            禁用
+            {/if}
+            {/if}
+        </td>
+        <td>{$vo.author}</td>
+        <td>{$vo.version}</td>
+        <td>
+            {empty name="vo.uninstall"}
+            <?php
+                $class  = get_plugs_class($vo['name']);
+                if(!class_exists($class)){
+                    $has_config = 0;
+                }else{
+                    $addon = new $class();
+                    $has_config = count($addon->getConfig());
+                }
+            ?>
+            <?php if ($has_config){ ?>
+                <button class="layui-btn layui-btn-normal layui-btn-mini">
+                    <a href="{:url('config',array('id'=>$vo['id']))}" style="color: white;">
+                        <i class="iconfont">&#xe669;</i>&nbsp;设置
+                    </a>
+                </button>
+            <?php } ?>
+            <?php if ($vo['status'] >=0){ ?>
+            {eq name="vo.status" value="0"}
+                <button class="layui-btn layui-btn-mini ajax" data-params='{"url": "setStatus","confirm":"true","data":"model=system_addons&ids={$vo.id}&status=1"}'>
+                    <i class="iconfont">&#xe63f;</i>&nbsp;启用
+                </button>
+            {else /}
+                <button class="layui-btn layui-btn-mini layui-btn-danger ajax" data-params='{"url": "setStatus","confirm":"true","data":"model=system_addons&ids={$vo.id}&status=0"}'>
+                    <i class="iconfont">&#xe61b;</i>&nbsp;禁用
+                </button>
+            {/eq}
+            <?php } ?>
+            {// {eq name="vo.author" value="thinkphp"}}
+                <button class="layui-btn layui-btn-mini  layui-btn-warm ajax" data-params='{"url": "uninstall","confirm":"true","data":"id={$vo.id}"}'>
+                    <i class="iconfont">&#xe626;</i>&nbsp;卸载
+                </button>
+            {// {/eq}}
+            {else /}
+                <button class="layui-btn layui-btn-mini ajax" data-params='{"url": "install","confirm":"true","data":"addon_name={$vo.name}"}'>
+                    <i class="iconfont">&#xe61f;</i>&nbsp;安装
+                </button>
+            {/empty}
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+
+</table>
+{/block}
+
+{block name="js"}
+<script>
+    //layui.use('list');
+    layui.use(['form', 'jquery','list'], function(){
+        var form = layui.form(),
+            $ = layui.jquery;
+        layui.selMeltiple($);
+        var flag1 = true;
+        $("#has_config").click(function(){
+            if(flag1){
+                $("#configSet").show();
+                $("#configSet-tpl").show();
+                flag1 = false;
+            }else{
+                $("#configSet").hide();
+                $("#configSet-tpl").hide();
+                flag1 = true;
+            }
+        });
+
+        var flag2 = true;
+        $("#has_adminlist").click(function(){
+            if(flag2){
+                $("#configInput").show();
+                $("#configInput-tpl").show();
+                flag2 = false;
+            }else{
+                $("#configInput").hide();
+                $("#configInput-tpl").hide();
+                flag2 = true;
+            }
+        });
+    });
+</script>
+{/block}

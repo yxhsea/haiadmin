@@ -1,0 +1,21 @@
+{extend name="base@:style" /}
+{block name="body"}
+<div class="container-fluid larry-wrapper">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <section class="panel panel-padding">
+                <form id="form1" class="layui-form layui-form-pane" data-render="true" action="add">
+                    {:plugs('editor',['title'=>'文章内容','name'=>'content','value'=>'123'])}
+                    {:plugs('uploadImg',['title'=>'图片上传','name'=>'images','value'=>'1,2,3'])}
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" jq-submit lay-filter="submit">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+{/block}

@@ -1,0 +1,93 @@
+{extend name="base@:style" /}
+{block name="body"}
+<div class="container-fluid larry-wrapper">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <section class="panel panel-padding">
+                <form id="form1" class="layui-form layui-form-pane" action="{:url('Config/saveConfig')}">
+                    <div class="layui-tab" lay-filter="check">
+                        <ul class="layui-tab-title">
+                            {volist name="group_config" id="vo"}
+                                <li {if condition="$vo['key'] eq $group_id"} class="layui-this" {/if} lay-id="{$vo.key}"><a href="{:url('config/setConfig',['group_id'=>$vo['key']])}">{$vo.value}设置</a></li>
+                            {/volist}
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                {volist name="group_data" id="vo"}
+                                {switch name="$vo.type" }
+                                {case value="0"}
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">{$vo.title}</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="config[{$vo.name}]" value="{$vo.value}" required jq-verify="required" jq-error="必须是数字" placeholder="{$vo.remark}" autocomplete="off" class="layui-input ">
+                                        </div>
+                                    </div>
+                                {/case}
+                                {case value="1"}
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">{$vo.title}</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="config[{$vo.name}]" value="{$vo.value}" required jq-verify="required" jq-error="请输入关键字" placeholder="{$vo.remark}" autocomplete="off" class="layui-input ">
+                                        </div>
+                                    </div>
+                                {/case}
+                                {case value="2"}
+                                    <div class="layui-form-item ">
+                                        <label class="layui-form-label">{$vo.title}</label>
+                                        <div class="layui-input-block">
+                                            <textarea name="config[{$vo.name}]" placeholder="{$vo.remark}" class="layui-textarea">{$vo.value}</textarea>
+                                        </div>
+                                    </div>
+                                {/case}
+                                {case value="3"}
+                                    <div class="layui-form-item ">
+                                        <label class="layui-form-label">{$vo.title}</label>
+                                        <div class="layui-input-block">
+                                            <textarea name="config[{$vo.name}]" placeholder="{$vo.remark}" class="layui-textarea">{$vo.value}</textarea>
+                                        </div>
+                                    </div>
+                                {/case}
+                                {case value="4"}
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">{$vo.title}</label>
+                                        <div class="layui-input-inline">
+                                            <select name="config[{$vo.name}]">
+                                                {volist name=":parse_config_attr($vo['extra'])" id="v"}
+                                                    <option value="{$key}">{$v}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {/case}
+                                {/switch}
+                                {/volist}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" jq-submit jq-filter="submit" jq-tab="true">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    layui.use(['simpleform','upload'], function(){
+        layui.upload({
+            url: "{:url('system/file/upload_img')}" //统一上传接口
+            ,success: function(res){ //上传成功后的回调
+                LAY_upload.src = res.urls;
+            }
+        });
+
+    });
+</script>
+{/block}
