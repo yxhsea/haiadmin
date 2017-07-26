@@ -17,7 +17,6 @@ class Config extends Model{
         $group && $where['group'] = $group;
         $keyword && $where['title|name'] = ['like','%'.$keyword.'%'];
         $data = $this->where($where)->limit($start, $limit)->order('sort ASC')->select();
-
         return $data;
     }
 
