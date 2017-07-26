@@ -10,7 +10,10 @@
                     {foreach name="data['config']" item="form" key="o_key"}
                             {switch name="form.type"}
                             {case value="tisp"}
-                            <blockquote class="layui-elem-quote" style="font-size: small;">{$form.title} : {$form.value}</blockquote>
+                            <!--<blockquote class="layui-elem-quote" style="font-size: small;">{$form.title} : {$form.value}</blockquote>-->
+                            <span style="display: block;margin-left: 110px;font-size: 12px;margin-top: 1px;">
+                                      <i class="layui-icon" style="font-size: 15px; color: red;">&#xe60b;&nbsp;</i>{$form.title} : {$form.value}
+                            </span>
                             {/case}
                             {case value="text"}
                             <div class="layui-form-item">
@@ -18,6 +21,9 @@
                                 <div class="layui-input-block">
                                     <input type="text" name="config[{$o_key}]" value="{$form.value}" required jq-verify="username" jq-error="请输入标题" placeholder="{$form.title}" autocomplete="off" class="layui-input ">
                                 </div>
+                                <span style="display: block;margin-left: 110px;font-size: 12px;margin-top: 1px;">
+                                      <i class="layui-icon" style="font-size: 15px; color: red;">&#xe60b;&nbsp;</i>{$form.title}
+                                </span>
                             </div>
                             {/case}
                             {case value="password"}
@@ -26,6 +32,9 @@
                                 <div class="layui-input-block">
                                     <input type="password" name="config[{$o_key}]" value="{$form.value}" placeholder="密码" autocomplete="off" class="layui-input ">
                                 </div>
+                                <span style="display: block;margin-left: 110px;font-size: 12px;margin-top: 1px;">
+                                      <i class="layui-icon" style="font-size: 15px; color: red;">&#xe60b;&nbsp;</i>{$form.title}
+                                </span>
                             </div>
                             {/case}
                             {case value="hidden"}
@@ -41,6 +50,9 @@
                                         {/foreach}
                                     </select>
                                 </div>
+                                <span style="display: block;margin-left: 110px;font-size: 12px;margin-top: 1px;">
+                                      <i class="layui-icon" style="font-size: 15px; color: red;">&#xe60b;&nbsp;</i>{$form.title}
+                                </span>
                             </div>
                             {/case}
                             {case value="select"}
@@ -53,6 +65,9 @@
                                         {/foreach}
                                     </select>
                                 </div>
+                                <span style="display: block;margin-left: 110px;font-size: 12px;margin-top: 1px;">
+                                      <i class="layui-icon" style="font-size: 15px; color: red;">&#xe60b;&nbsp;</i>{$form.title}
+                                </span>
                             </div>
                             {/case}
                             {case value="textarea"}
@@ -61,6 +76,9 @@
                                 <div class="layui-input-block">
                                     <textarea name="config[{$o_key}]" placeholder="{$form.tip}" class="layui-textarea">{$form.value}</textarea>
                                 </div>
+                                <span style="display: block;margin-left: 110px;font-size: 12px;margin-top: 1px;">
+                                      <i class="layui-icon" style="font-size: 15px; color: red;">&#xe60b;&nbsp;</i>{$form.title}
+                                </span>
                             </div>
                             {/case}
                             {case value="checkbox"}
@@ -73,15 +91,17 @@
                                         {/foreach}
                                     </select>
                                 </div>
+                                <span style="display: block;margin-left: 110px;font-size: 12px;margin-top: 1px;">
+                                      <i class="layui-icon" style="font-size: 15px; color: red;">&#xe60b;&nbsp;</i>{$form.title}
+                                </span>
                             </div>
                             {/case}
                             {/switch}
-
                     {/foreach}
                     {else /}
                     {$custom_config}
                     {/empty}
-
+                    <br>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
                             <button class="layui-btn" jq-submit jq-filter="submit">立即提交</button>

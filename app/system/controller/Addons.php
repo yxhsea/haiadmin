@@ -10,6 +10,7 @@ use think\Db;
 use app\system\model\Addons as AddonsModel;
 use app\system\model\Hooks as HooksModel;
 use think\Request;
+use think\Config;
 
 class Addons extends Base
 {
@@ -448,6 +449,8 @@ str;
             // 记录当前列表页的cookie
             // Cookie('__forward__',$_SERVER['REQUEST_URI']);
         }else{
+            //钩子类型
+            $this->assign('hooks_type',Config::get('HOOKS_TYPE'));
             return $this->fetch();
         }
     }

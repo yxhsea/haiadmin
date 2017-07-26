@@ -6,7 +6,7 @@
             <!--列表-->
             <section class="panel panel-padding">
                 <div class="group-button">
-                    <button class="layui-btn layui-btn-small modal-catch" data-params='{"content": ".add-subcat", "title": "添加钩子","area":"800px"}'>
+                    <button class="layui-btn layui-btn-small modal-catch" data-params='{"content": ".add-subcat", "title": "添加钩子","area":"800px,400px"}'>
                         <i class="iconfont">&#xe649;</i> 添加钩子
                     </button>
                 </div>
@@ -36,7 +36,9 @@
             <label class="layui-form-label">钩子类型</label>
             <div class="layui-input-inline">
                 <select name="type" jq-verify="required" jq-error="请输入分类" lay-filter="verify">
-                    <option value="1">视图</option>
+                    {volist name="hooks_type" id="vo"}
+                        <option value="{$vo.key}">{$vo.value}</option>
+                    {/volist}
                 </select>
             </div>
         </div>
@@ -71,6 +73,8 @@
             <td>
                 {{# if(item.type === 1){ }}
                     视图
+                {{# }else{ }}
+                    控制器
                 {{# } }}
             </td>
             <td>
@@ -79,7 +83,7 @@
                     <i class="iconfont">&#xe653;</i>编辑
                 </button>
                 <button class="layui-btn layui-btn-mini layui-btn-danger ajax"
-                        data-params='{"url": "forceDelete","confirm":"true","data":"model=system_hooks&id={{item.id}}"}'>
+                        data-params='{"url": "delete","confirm":"true","data":"model=system_hooks&id={{item.id}}"}'>
                     <i class="iconfont">&#xe626;</i>删除
                 </button>
             </td>
